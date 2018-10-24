@@ -17,20 +17,37 @@ namespace {
             std::cout << val << ' ';
         std::cout << '\n';
     }
+
+    std::vector<int> generate_random_data(int size) {
+        std::vector<int> data(size);
+        auto engine = std::mt19937{ std::random_device{}() };
+        std::uniform_int_distribution<int> dist{ 1, 100 };
+        std::generate(data.begin(), data.end(), [&dist, &engine]() { return dist(engine); });
+        return data;
+    }
+
+    std::vector<int> generate_shuffled_uniques(int size) {
+        std::vector<int> data(size);
+        std::iota(data.begin(), data.end(), 1);
+        std::shuffle(data.begin(), data.end(), std::mt19937{ std::random_device{}() });
+        return data;
+    }
 }
 
 int main()
 {
     const auto data_size = 20;
-    std::vector<int> data_to_sort(data_size);
-    std::iota(data_to_sort.begin(), data_to_sort.end(), 1);
-    std::shuffle(data_to_sort.begin(), data_to_sort.end(), std::mt19937{ std::random_device{}() });
+    const auto data_to_sort = generate_random_data(data_size);
+    print_container("data", data_to_sort);
 
     auto bubble_res = bubble_sort(data_to_sort);
     print_container("bubble", bubble_res);
 
     auto insertion_res = insertion_sort(data_to_sort);
     print_container("insertion", insertion_res);
+
+    auto merge_res = merge_sort(data_to_sort);
+    print_container("merge", merge_res);
 
     return 0;
 }
