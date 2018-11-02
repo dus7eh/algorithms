@@ -49,6 +49,9 @@ int main()
     auto merge_res = merge_sort(data_to_sort);
     print_container("merge", merge_res);
 
+    auto selection_res = selection_sort(data_to_sort);
+    print_container("selection", selection_res);
+
     return 0;
 }
 
