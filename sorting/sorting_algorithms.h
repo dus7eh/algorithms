@@ -1,36 +1,36 @@
 #pragma once
 
 #include <vector>
-#include <tuple>
+#include <iterator>
 
 template <typename T>
-T bubble_sort(T data) {
-    for (auto i = 0u; i < data.size(); ++i) {
+void bubble_sort(T first, T last) {
+    for (auto outer = first; outer != last; ++outer) {
         bool sorted = true;
-        for (auto j = 1u; j < data.size(); ++j)
-            if (data[j - 1] > data[j]) {
-                std::swap(data[j - 1], data[j]);
+        for (auto inner = std::next(first); inner != last; ++inner) {
+            auto prev_it = std::prev(inner);
+            if (*prev_it > *inner) {
+                std::swap(*prev_it, *inner);
                 sorted = false;
             }
+        }
         if (sorted)
             break;
     }
-
-    return data;
 }
 
 template <typename T>
-T insertion_sort(const T& data) {
-    T res{};
-    for (auto cit = data.begin(); cit != data.end(); ++cit) {
-        auto it = std::find_if(res.begin(), res.end(), [ref = *cit](const auto& val) { return val > ref; });
-        if (it == res.end())
-            res.push_back(*cit);
+void insertion_sort(T first, T last) {
+    std::vector<T::value_type> res{};
+    for (auto it = first; it != last; ++it) {
+        auto gr_it = std::find_if(res.begin(), res.end(), [ref = *it](const auto& val) { return val > ref; });
+        if (gr_it == res.end())
+            res.push_back(*it);
         else
-            res.insert(it, *cit);
+            res.insert(gr_it, *it);
     }
 
-    return res;
+    std::copy(res.begin(), res.end(), first);
 }
 
 namespace _merge_detail {
@@ -38,8 +38,8 @@ namespace _merge_detail {
     using iter = typename std::vector<T>::iterator;
 
     template <typename T>
-    void merge(iter<T> bit, iter<T> mit, iter<T> eit) {
-        std::vector<T> res(std::distance(bit, eit));
+    void merge(T bit, T mit, T eit) {
+        std::vector<T::value_type> res(std::distance(bit, eit));
         const auto left_begin = bit;
         const auto left_end = mit;
         auto res_it = res.begin();
@@ -56,7 +56,7 @@ namespace _merge_detail {
     }
 
     template <typename T>
-    void m_sort(iter<T> bit, iter<T> eit) {
+    void m_sort(T bit, T eit) {
         if (std::next(bit) != eit) {
             auto mit = std::next(bit, std::distance(bit, eit) / 2);
             m_sort<T>(bit, mit);
@@ -67,20 +67,18 @@ namespace _merge_detail {
 }
 
 template <typename T>
-std::vector<T> merge_sort(std::vector<T> data) {
-    if (!data.size())
-        return {};
+void merge_sort(T first, T last) {
+    if (first == last)
+        return;
 
-    _merge_detail::m_sort<T>(data.begin(), data.end());
-    return data;
+    _merge_detail::m_sort<T>(first, last);
 }
 
 template <typename T>
-T selection_sort(T data) {
-    for (auto i_it = data.begin(); i_it != data.end(); ++i_it) {
-        auto min_it = std::min_element(std::next(i_it), data.end());
-        if (min_it != data.end())
-            std::swap(*i_it, *min_it);
+void selection_sort(T first, T last) {
+    for (; first != last; ++first) {
+        auto min_it = std::min_element(first, last);
+        if (min_it != last)
+            std::swap(*first, *min_it);
     }
-    return data;
 }

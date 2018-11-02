@@ -40,17 +40,21 @@ int main()
     const auto data_to_sort = generate_random_data(data_size);
     print_container("data", data_to_sort);
 
-    auto bubble_res = bubble_sort(data_to_sort);
-    print_container("bubble", bubble_res);
+    auto bubble_data = data_to_sort;
+    bubble_sort(bubble_data.begin(), bubble_data.end());
+    print_container("bubble", bubble_data);
 
-    auto insertion_res = insertion_sort(data_to_sort);
-    print_container("insertion", insertion_res);
+    auto insertion_data = data_to_sort;;
+    insertion_sort(insertion_data.begin(), insertion_data.end());
+    print_container("insertion", insertion_data);
 
-    auto merge_res = merge_sort(data_to_sort);
-    print_container("merge", merge_res);
+    auto merge_data = data_to_sort;
+    merge_sort(merge_data.begin(), merge_data.end());
+    print_container("merge", merge_data);
 
-    auto selection_res = selection_sort(data_to_sort);
-    print_container("selection", selection_res);
+    auto selection_data = data_to_sort;
+    selection_sort(selection_data.begin(), selection_data.end());
+    print_container("selection", selection_data);
 
     return 0;
 }
