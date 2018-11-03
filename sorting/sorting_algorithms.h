@@ -21,16 +21,14 @@ void bubble_sort(T first, T last) {
 
 template <typename T>
 void insertion_sort(T first, T last) {
-    std::vector<T::value_type> res{};
     for (auto it = first; it != last; ++it) {
-        auto gr_it = std::find_if(res.begin(), res.end(), [ref = *it](const auto& val) { return val > ref; });
-        if (gr_it == res.end())
-            res.push_back(*it);
-        else
-            res.insert(gr_it, *it);
+        auto greater = std::find_if(first, it, [ref = *it](const auto& val) { return val > ref; });
+        if (greater != it) {
+            const auto val = *it;
+            std::copy(greater, it, std::next(greater));
+            *greater = val;
+        }
     }
-
-    std::copy(res.begin(), res.end(), first);
 }
 
 namespace _merge_detail {
@@ -80,5 +78,14 @@ void selection_sort(T first, T last) {
         auto min_it = std::min_element(first, last);
         if (min_it != last)
             std::swap(*first, *min_it);
+    }
+}
+
+namespace _shell_detail {
+    size_t calculate_interval(size_t len) {
+        auto interval = 1;
+        while (interval < len / 3)
+            interval = interval * 3 + 1;
+        return interval;
     }
 }
