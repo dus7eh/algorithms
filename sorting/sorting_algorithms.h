@@ -82,10 +82,34 @@ void selection_sort(T first, T last) {
 }
 
 namespace _shell_detail {
-    size_t calculate_interval(size_t len) {
+    int calculate_interval(const size_t len) {
         auto interval = 1;
-        while (interval < len / 3)
+        while (size_t(interval) < len)
             interval = interval * 3 + 1;
-        return interval;
+        return (interval - 1) / 3;
+    }
+}
+
+template <typename T>
+void shell_sort(T first, T last) {
+    const auto len = std::distance(first, last);
+    if (!len)
+        return;
+
+    auto interval = _shell_detail::calculate_interval(len);
+    while (interval) {
+        for (auto it = std::next(first, interval); it != last; ++it) {
+            auto curr_it = it;
+            auto prev_it = std::prev(it, interval);
+            while (*prev_it > *curr_it) {
+                std::swap(*prev_it, *curr_it);
+                curr_it = prev_it;
+
+                if (std::distance(first, prev_it) < interval)
+                    break;
+                prev_it = std::prev(prev_it, interval);
+            }
+        }
+        interval /= 3;
     }
 }

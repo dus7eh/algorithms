@@ -56,6 +56,10 @@ int main()
     selection_sort(selection_data.begin(), selection_data.end());
     print_container("selection", selection_data);
 
+    auto shell_data = data_to_sort;
+    shell_sort(shell_data.begin(), shell_data.end());
+    print_container("shell", shell_data);
+
     return 0;
 }
 
