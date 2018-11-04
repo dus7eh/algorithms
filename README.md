@@ -12,5 +12,6 @@ Currently the following algorithms are implemented:
     - insertion
     - merge
     - selection
+    - shell
  - searching
- 
+    - TBD
