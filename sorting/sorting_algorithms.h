@@ -25,16 +25,13 @@ void insertion_sort(T first, T last) {
         auto greater = std::find_if(first, it, [ref = *it](const auto& val) { return val > ref; });
         if (greater != it) {
             const auto val = *it;
-            std::copy(greater, it, std::next(greater));
+            std::copy_backward(greater, it, std::next(it));
             *greater = val;
         }
     }
 }
 
 namespace _merge_detail {
-    template <typename T>
-    using iter = typename std::vector<T>::iterator;
-
     template <typename T>
     void merge(T bit, T mit, T eit) {
         std::vector<T::value_type> res(std::distance(bit, eit));
@@ -52,24 +49,16 @@ namespace _merge_detail {
         std::copy(mit, eit, res_it);
         std::copy(res.begin(), res.end(), left_begin);
     }
-
-    template <typename T>
-    void m_sort(T bit, T eit) {
-        if (std::next(bit) != eit) {
-            auto mit = std::next(bit, std::distance(bit, eit) / 2);
-            m_sort<T>(bit, mit);
-            m_sort<T>(mit, eit);
-            merge<T>(bit, mit, eit);
-        }
-    }
 }
 
 template <typename T>
 void merge_sort(T first, T last) {
-    if (first == last)
-        return;
-
-    _merge_detail::m_sort<T>(first, last);
+    if (std::next(first) != last) {
+        auto mit = std::next(first, std::distance(first, last) / 2);
+        merge_sort<T>(first, mit);
+        merge_sort<T>(mit, last);
+        _merge_detail::merge<T>(first, mit, last);
+    }
 }
 
 template <typename T>
@@ -111,5 +100,33 @@ void shell_sort(T first, T last) {
             }
         }
         interval /= 3;
+    }
+}
+
+template <typename T>
+void quick_sort(T first, T last) {
+    const auto len = std::distance(first, last);
+    if (len > 1) {
+        auto piv = std::prev(last);
+        auto lo = first;
+        auto hi = std::prev(piv);
+        while (lo != hi) {
+            if (*lo > *piv && *piv >= *hi) {
+                std::swap(*lo, *hi);
+                continue;
+            }
+
+            if (*lo <= *piv)
+                ++lo;
+            else if (*piv < *hi)
+                --hi;
+        }
+        if (*piv < *lo)
+            std::swap(*piv, *lo); // to avoid the need of merge stage
+
+        if (first != lo)
+            quick_sort(first, std::next(lo));
+        if (hi != std::prev(piv))
+            quick_sort(hi, std::next(piv));
     }
 }

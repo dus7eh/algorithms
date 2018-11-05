@@ -60,6 +60,10 @@ int main()
     shell_sort(shell_data.begin(), shell_data.end());
     print_container("shell", shell_data);
 
+    auto quick_data = data_to_sort;
+    quick_sort(quick_data.begin(), quick_data.end());
+    print_container("quick", quick_data);
+
     return 0;
 }
 
