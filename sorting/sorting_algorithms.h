@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iterator>
+#include <map>
 
 template <typename T>
 void bubble_sort(T first, T last) {
@@ -128,5 +129,42 @@ void quick_sort(T first, T last) {
             quick_sort(first, std::next(lo));
         if (hi != std::prev(piv))
             quick_sort(hi, std::next(piv));
+    }
+}
+
+template <typename T, typename Limits = std::numeric_limits<T::value_type>>
+void counting_sort(T first, T last, const typename T::value_type min = Limits::min(), const typename T::value_type max = Limits::max()) {
+    std::vector<T::value_type> cache(max - min);
+    for (auto it = first; it != last; ++it) {
+        const int& idx = *it - min;
+        ++cache[idx];
+    }
+
+    auto curr = first;
+    T::value_type val = 0;
+    for (auto it = cache.cbegin(); it != cache.cend(); ++it) {
+        for (T::value_type i = *it; i != 0; --i) {
+            *curr = val + min;
+            ++curr;
+        }
+        ++val;
+    }
+}
+
+template <typename T>
+void counting_compact_sort(T first, T last) {
+    std::map<T::value_type, uint32_t> cache;
+    for (auto it = first; it != last; ++it) {
+        const auto found = cache.find(*it);
+        if (found != cache.end())
+            ++(found->second);
+        else
+            cache[*it] = 1;
+    }
+    
+    auto curr = first;
+    for (auto entry = cache.begin(); entry != cache.end(); ++entry) {
+        std::fill_n(curr, entry->second, entry->first);
+        std::advance(curr, entry->second);
     }
 }
