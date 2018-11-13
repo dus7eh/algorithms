@@ -13,10 +13,10 @@ Currently the following algorithms are implemented:
     - selection sort
     - shell sort
     - quick sort
+    - counting sort
 
 Planned algorithms:
  - sorting:
-    - counting sort
     - heap sort
  - searching
     - binary search
